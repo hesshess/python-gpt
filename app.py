@@ -37,8 +37,8 @@ def embed_file(file):
     os.makedirs(file_path, mode=0o777, exist_ok=True)
     with open(file_path, 'wb') as f:
         f.write(file_content)
+    os.makedirs(f"./embeddings/{file.name}", mode=0o777, exist_ok=True)
     cache_dir = LocalFileStore(f"./embeddings/{file.name}")
-    os.makedirs(cache_dir, mode=0o777, exist_ok=True)
     splitter = CharacterTextSplitter.from_tiktoken_encoder(
         separator="\n",
         chunk_size=600,
