@@ -35,7 +35,7 @@ def embed_file(file):
     file_path = f"./files/{file.name}"
     with open(file_path, 'wb') as f:
         f.write(file_content)
-    cache_dir = LocalFileStore(f".embeddings/{file.name}") 
+    cache_dir = LocalFileStore(f"./embeddings/{file.name}") 
     splitter = CharacterTextSplitter.from_tiktoken_encoder(
         separator="\n",
         chunk_size=600,
@@ -43,7 +43,7 @@ def embed_file(file):
     )   
     loader = UnstructuredFileLoader(file_path)
     docs = loader.load_and_split(text_splitter=splitter)
-    embeddings = OpenAIEmbeddings(openai_api_key=st.session_state.key) 
+    embeddings = OpenAIEmbeddings() 
     cached_embeddings = CacheBackedEmbeddings.from_bytes_store(
         embeddings, cache_dir
     )   
