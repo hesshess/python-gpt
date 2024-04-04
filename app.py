@@ -1,3 +1,4 @@
+import os
 from langchain.callbacks.base import BaseCallbackHandler
 from langchain.chat_models import ChatOpenAI
 from langchain.document_loaders import UnstructuredFileLoader
@@ -33,6 +34,7 @@ def save_message(message, role):
 def embed_file(file):
     file_content = file.read()
     file_path = f"./files/{file.name}"
+    os.mkdir(file_path)
     with open(file_path, 'wb') as f:
         f.write(file_content)
     cache_dir = LocalFileStore(f"./embeddings/{file.name}")
