@@ -1,0 +1,11 @@
+{
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#123506",
+    "titleBar.activeBackground": "#194A09",
+    "titleBar.activeForeground": "#F2FDEE"
+  },
+  "python.analysis.typeCheckingMode": "basic",
+  "python.autoComplete.extraPaths": ["./env/bin/python3.11"],
+  "python.analysis.extraPaths": ["./env/bin/python3.11"],
+  "python.analysis.autoImportCompletions": true
+}
