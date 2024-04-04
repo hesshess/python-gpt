@@ -1,5 +1,3 @@
-from typing import Dict, List
-from uuid import UUID
 from langchain.callbacks.base import BaseCallbackHandler
 from langchain.chat_models import ChatOpenAI
 from langchain.document_loaders import UnstructuredFileLoader
@@ -22,13 +20,11 @@ st.set_page_config(
 st.title("Document GPT")
 
 st.markdown("""
-            Welcome!
+            Welcome! Use this chatbot to ask questions to an AI about your files!
             
-            Use this chatbot to ask questions to an AI about your files!
-            
-            ⬅️ Write your OPENAI API KEY on the sidebar.
+           ### ⬅️ Enter your OPENAI API KEY on the sidebar first🔑
+       
             """)
-st.sidebar.link_button("🏠 Git Repo 🏠", 'https://github.com/hesshess/python-gpt')
 
 def save_message(message, role):
     st.session_state['messages'].append({'role': role, 'message': message})
@@ -71,11 +67,13 @@ def format_docs(docs):
     return "\n\n".join(document.page_content for document in docs)
 
 def load_memory(_):
+    print(f"❌{memory.load_memory_variables({})}❌")
     return memory.load_memory_variables({})["chat_history"]
 
 def invoke_chain(question):
     result = chain.invoke(question)
     memory.save_context({'input': question}, {'output': str(result.content)})
+    print(f"👹{memory.load_memory_variables({})}👹")
 
 
 class ChatCallBackHandler(BaseCallbackHandler):
@@ -91,22 +89,23 @@ class ChatCallBackHandler(BaseCallbackHandler):
 
 
 
-api_key = st.sidebar.text_input("Please enter your OPENAI API KEY🔑")
+key = st.sidebar.text_input("⬇️ OPENAI API KEY 🔑")
         
-if api_key:
-
+if key:
+    st.session_state['key'] = key
     llm = ChatOpenAI(
         temperature=0.1,
         streaming=True,
         callbacks=[
             ChatCallBackHandler(),
         ],
-        openai_api_key=api_key,
+        openai_api_key=st.session_state.key,
     )
     memory = ConversationBufferMemory(
         memory_key='chat_history',
         return_messages=True,
     )
+    print(f"🌞new ConversationBufferMemory💩")
     
     prompt = ChatPromptTemplate.from_messages([
     ('system', """
@@ -140,3 +139,6 @@ if api_key:
             
     else:
         st.session_state['messages'] = [] 
+        del st.session_state['key']
+
+st.sidebar.link_button("🏠 Github repository 🏠", 'https://github.com/hesshess/python-gpt/commit/52f94cca3e9893eafdc07005772cc235e0d962f2')

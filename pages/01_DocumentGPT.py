@@ -1,5 +1,3 @@
-from typing import Dict, List
-from uuid import UUID
 from langchain.callbacks.base import BaseCallbackHandler
 from langchain.chat_models import ChatOpenAI
 from langchain.document_loaders import UnstructuredFileLoader
@@ -10,9 +8,8 @@ from langchain.vectorstores import FAISS
 from langchain.storage import LocalFileStore
 from langchain.prompts import ChatPromptTemplate,MessagesPlaceholder
 from langchain.schema.runnable import RunnablePassthrough, RunnableLambda
-from langchain.memory import ConversationBufferMemory
+from langchain.memory import ConversationSummaryBufferMemory
 
-import time
 import streamlit as st
 
 st.set_page_config(
@@ -22,8 +19,6 @@ st.set_page_config(
 st.title("Document GPT")
 
 st.markdown("""
-            Welcome!
-            
             Use this chatbot to ask questions to an AI about your files!
             
             ⬅️ Upload your files on the sidebar.
@@ -53,8 +48,10 @@ llm = ChatOpenAI(
         ChatCallBackHandler(),
     ]
 )
-memory = ConversationBufferMemory(
-    memory_key='chat_history',
+memory = ConversationSummaryBufferMemory(
+    llm=llm,
+    max_token_limit=10000,
+    memory_key="chat_history",
     return_messages=True,
 )
 
@@ -76,7 +73,7 @@ def embed_file(file):
     cached_embeddings = CacheBackedEmbeddings.from_bytes_store(
         embeddings, cache_dir
     )   
-    vectorstore = FAISS.from_documents(docs,    cached_embeddings) 
+    vectorstore = FAISS.from_documents(docs,cached_embeddings) 
     retriever = vectorstore.as_retriever()
     return retriever
 
@@ -100,10 +97,10 @@ def load_memory(_):
     return memory.load_memory_variables({})["chat_history"]
 
 def invoke_chain(question):
-    result = chain.invoke({
-        'question': question
-    }).content
-    memory.save_context({'input': question}, {'output': str(result)})
+    result = chain.invoke(question)
+    memory.save_context({"inputs": question}, {"outputs": result.content})
+    print(f"👹{memory.load_memory_variables({})}👹")
+    
 
 prompt = ChatPromptTemplate.from_messages([
     ('system', """
@@ -120,16 +117,17 @@ if file:
     retriever = embed_file(file)
     send_message("I'm ready! Ask away!", "ai", save=False)
     paint_history()
-    message = st.chat_input("Ask anything about your file...")   
+    message = st.chat_input("Ask anything about your file...")  
     if message:
         send_message(message, "human")
         chain = ({
             'context': retriever | RunnableLambda(format_docs),
             'question': RunnablePassthrough(),
-            'chat_history': RunnableLambda(load_memory)
+            'chat_history': RunnableLambda(load_memory),
         } | prompt | llm)
         with st.chat_message('ai'):
-            response = chain.invoke(message) 
+            response = invoke_chain(message) 
+            
         
 else:
     st.session_state['messages'] = [] 
