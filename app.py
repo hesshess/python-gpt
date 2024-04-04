@@ -33,12 +33,12 @@ def save_message(message, role):
 @st.cache_data(show_spinner="Embedding file...")
 def embed_file(file):
     file_content = file.read()
-    file_path = f"./files/{file.name}"
+    file_path = f"./..cache/files/{file.name}"
     os.makedirs(file_path, exist_ok=True)
     with open(file_path, 'wb') as f:
         f.write(file_content)
-    os.makedirs(f"./embeddings/{file.name}", exist_ok=True)
-    cache_dir = LocalFileStore(f"./embeddings/{file.name}")
+    os.makedirs(f"./..cache/embeddings/{file.name}", exist_ok=True)
+    cache_dir = LocalFileStore(f"./..cache/embeddings/{file.name}")
     splitter = CharacterTextSplitter.from_tiktoken_encoder(
         separator="\n",
         chunk_size=600,
