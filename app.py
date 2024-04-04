@@ -34,10 +34,10 @@ def save_message(message, role):
 def embed_file(file):
     file_content = file.read()
     file_path = f"./files/{file.name}"
-    os.makedir(file_path)
+    os.makedirs(file_path)
     with open(file_path, 'wb') as f:
         f.write(file_content)
-    os.makedir(f"./embeddings/{file.name}")
+    os.makedirs(f"./embeddings/{file.name}")
     cache_dir = LocalFileStore(f"./embeddings/{file.name}")
     splitter = CharacterTextSplitter.from_tiktoken_encoder(
         separator="\n",
