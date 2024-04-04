@@ -34,7 +34,7 @@ def save_message(message, role):
 def embed_file(file):
     file_content = file.read()
     file_path = f"./files/{file.name}"
-    os.mkdir(file_path)
+    os.makedirs(file_path, exist_ok=True)
     with open(file_path, 'wb') as f:
         f.write(file_content)
     cache_dir = LocalFileStore(f"./embeddings/{file.name}")
