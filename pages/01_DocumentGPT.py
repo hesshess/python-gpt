@@ -10,7 +10,7 @@ from langchain.vectorstores import FAISS
 from langchain.storage import LocalFileStore
 from langchain.prompts import ChatPromptTemplate,MessagesPlaceholder
 from langchain.schema.runnable import RunnablePassthrough, RunnableLambda
-from langchain.memory import ConversationBufferMemory
+from langchain.memory import ConversationSummaryBufferMemory
 
 import time
 import streamlit as st
@@ -53,6 +53,12 @@ llm = ChatOpenAI(
         ChatCallBackHandler(),
     ]
 )
+memory = ConversationSummaryBufferMemory(
+    llm=llm,
+    max_token_limit=200,
+    memory_key='chat_history',
+    return_messages=True,
+)
 
 @st.cache_data(show_spinner="Embedding file...")
 def embed_file(file):
@@ -91,6 +97,15 @@ def paint_history():
         
 def format_docs(docs):
     return "\n\n".join(document.page_content for document in docs)
+ 
+def load_memory(_):
+    return memory.load_memory_variables({})["chat_history"]
+
+def invoke_chain(question):
+    result = chain.invoke({
+        'question': question
+    })
+    memory.save_context({'input': question}, {'output': result.content})
 
 prompt = ChatPromptTemplate.from_messages([
     ('system', """
@@ -98,6 +113,7 @@ prompt = ChatPromptTemplate.from_messages([
      
      Context: {context}
      """),
+    MessagesPlaceholder(variable_name='chat_history'),
     ('human', '{question}')
 ])
 
@@ -111,7 +127,8 @@ if file:
         send_message(message, "human")
         chain = ({
             'context': retriever | RunnableLambda(format_docs),
-            'question': RunnablePassthrough() 
+            'question': RunnablePassthrough(),
+            'chat_history': RunnablePassthrough.assign(chat_history=load_memory)
         } | prompt | llm)
         with st.chat_message('ai'):
             response = chain.invoke(message) 
