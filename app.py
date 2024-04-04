@@ -142,4 +142,4 @@ if key:
         st.session_state['messages'] = [] 
         del st.session_state['key']
 
-st.sidebar.link_button("🏠 Github repository 🏠", 'https://github.com/hesshess/python-gpt')
+st.sidebar.link_button("🏠 Github repository 🏠", 'https://github.com/hesshess/python-gpt/blob/2ce8a041c306af8404c893aa8037f15e8681589c/app.py')
