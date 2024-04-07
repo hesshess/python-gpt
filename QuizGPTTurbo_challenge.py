@@ -49,6 +49,7 @@ st.set_page_config(
 )
 st.title("QuizGPT")
 
+
 key = st.sidebar.text_input("⬇️ OPENAI API KEY 🔑")
 
 if key:
@@ -82,7 +83,6 @@ if key:
         docs = response.additional_kwargs["function_call"]["arguments"]      
         if docs:      
             response = json.loads(docs)
-            st.sidebar.write(response)
             with st.form(key="questions_form", clear_on_submit=True):
                 right_num = 0
                 for question in response['questions']:
@@ -111,4 +111,4 @@ else:
                 # st.write(f"Your score is {right_num}/{len(response['questions'])}")
                 # retake_btn = st.button("Retake")
     
-
+st.sidebar.link_button("🏠 Github repository 🏠", 'https://github.com/hesshess/python-gpt/blob/main/QuizGPTTurbo_challenge.py')
