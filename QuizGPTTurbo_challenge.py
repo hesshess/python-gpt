@@ -91,6 +91,9 @@ if key:
                     real = ''
                     if {'answer': value, 'correct':True} in question['answers']:
                         right_num += 1
+                        st.success("Corrent!✅")
+                    elif value is not None:
+                        st.error("Wrong❌")
                 button = st.form_submit_button()
             if button:
                 if right_num == len(response['questions']):
