@@ -162,10 +162,8 @@ def invoke_query(query):
 key = st.sidebar.text_input("⬇️ OPENAI API KEY 🔑")
 
 if key:
-    st.session_state["key"] = key
-    st.sidebar.write(st.session_state.key)
-    st.sidebar.write(type(st.session_state.key))
-    llm = ChatOpenAI(temperature=0.1, api_key=st.session_state["key"])
+    st.sidebar.write(key)
+    llm = ChatOpenAI(temperature=0.1, api_key=key)
     retriever = load_website("https://developers.cloudflare.com/assets/sitemap.xml")
     query = st.text_input("Ask a question to the website.")
     if query:
