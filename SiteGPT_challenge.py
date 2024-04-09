@@ -169,3 +169,9 @@ if key:
     if query:
         result = invoke_query(query)
         st.markdown(str(result).replace("$", "\$"))
+
+
+st.sidebar.link_button(
+    "🏠 Github repository 🏠",
+    "https://github.com/hesshess/python-gpt/commit/bb034c6f6660b4424640a2e28b6cc80e4b131b82",
+)
