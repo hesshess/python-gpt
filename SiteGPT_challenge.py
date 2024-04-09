@@ -123,7 +123,9 @@ def load_website(url):
     )
     loader.requests_per_second = 2
     docs = loader.load_and_split(text_splitter=splitter)
-    vector_store = FAISS.from_documents(docs, OpenAIEmbeddings())
+    vector_store = FAISS.from_documents(
+        docs, OpenAIEmbeddings(api_key=st.session_state["key"])
+    )
     return vector_store.as_retriever()
 
 
@@ -162,8 +164,8 @@ def invoke_query(query):
 key = st.sidebar.text_input("⬇️ OPENAI API KEY 🔑")
 
 if key:
-    st.sidebar.write(key)
-    llm = ChatOpenAI(temperature=0.1, openai_api_key=key)
+    st.session_state["key"] = key
+    llm = ChatOpenAI(temperature=0.1, api_key=st.session_state["key"])
     retriever = load_website("https://developers.cloudflare.com/assets/sitemap.xml")
     query = st.text_input("Ask a question to the website.")
     if query:
