@@ -133,18 +133,6 @@ st.set_page_config(
 )
 
 
-st.markdown(
-    """
-    # SiteGPT Challenge
-    ## Ask me about CloudFlare with these subjects below
-    - AI Gateway
-    - Cloudflare Vectorize
-    - Workers AI
-
-"""
-)
-
-
 @st.cache_data(show_spinner="guessing...")
 def invoke_query(query):
     chain = (
@@ -162,7 +150,23 @@ def invoke_query(query):
 key = st.sidebar.text_input("⬇️ OPENAI API KEY 🔑")
 
 if key:
-    llm = ChatOpenAI(temperature=0.1, openai_api_key=key)
+    st.markdown(
+        """
+    # SiteGPT Challenge
+    ## Ask me about CloudFlare with these subjects below
+    - AI Gateway
+    - Cloudflare Vectorize
+    - Workers AI
+
+"""
+    )
+    st.session_state["key"] = key
+    llm = ChatOpenAI(
+        temperature=0.1,
+        model="gpt-3.5-turbo-0125",
+        streaming=True,
+        openai_api_key=st.session_state["key"],
+    )
     retriever = load_website("https://developers.cloudflare.com/assets/sitemap.xml")
     query = st.text_input("Ask a question to the website.")
     if query:
