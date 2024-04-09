@@ -40,10 +40,6 @@ answers_prompt = ChatPromptTemplate.from_template(
 def get_answers(inputs):
     docs = inputs["docs"]
     question = inputs["question"]
-    llm = ChatOpenAI(
-        temperature=0.1,
-        openai_api_key=st.session_state["key"],
-    )
     answers_chain = answers_prompt | llm
     # answers = []
     # for doc in docs:
@@ -88,10 +84,6 @@ choose_prompt = ChatPromptTemplate.from_messages(
 def choose_answer(inputs):
     answers = inputs["answers"]
     question = inputs["question"]
-    llm = ChatOpenAI(
-        temperature=0.1,
-        openai_api_key=st.session_state["key"],
-    )
     choose_chain = choose_prompt | llm
     condensed = "\n\n".join(
         f"{answer['answer']} \n Source:{answer['source']} \n Date:{answer['date']} \n "
@@ -141,6 +133,18 @@ st.set_page_config(
 )
 
 
+st.markdown(
+    """
+    # SiteGPT Challenge
+    ## Ask me about CloudFlare with these subjects below
+    - AI Gateway
+    - Cloudflare Vectorize
+    - Workers AI
+
+"""
+)
+
+
 @st.cache_data(show_spinner="guessing...")
 def invoke_query(query):
     chain = (
@@ -158,21 +162,8 @@ def invoke_query(query):
 key = st.sidebar.text_input("⬇️ OPENAI API KEY 🔑")
 
 if key:
-    st.markdown(
-        """
-    # SiteGPT Challenge
-    ## Ask me about CloudFlare with these subjects below
-    - AI Gateway
-    - Cloudflare Vectorize
-    - Workers AI
-
-"""
-    )
     st.session_state["key"] = key
-    llm = ChatOpenAI(
-        temperature=0.1,
-        openai_api_key=st.session_state["key"],
-    )
+    llm = ChatOpenAI(temperature=0.1, api_key=st.session_state["key"])
     retriever = load_website("https://developers.cloudflare.com/assets/sitemap.xml")
     query = st.text_input("Ask a question to the website.")
     if query:
