@@ -40,6 +40,10 @@ answers_prompt = ChatPromptTemplate.from_template(
 def get_answers(inputs):
     docs = inputs["docs"]
     question = inputs["question"]
+    llm = ChatOpenAI(
+        temperature=0.1,
+        openai_api_key=st.session_state["key"],
+    )
     answers_chain = answers_prompt | llm
     # answers = []
     # for doc in docs:
@@ -84,6 +88,10 @@ choose_prompt = ChatPromptTemplate.from_messages(
 def choose_answer(inputs):
     answers = inputs["answers"]
     question = inputs["question"]
+    llm = ChatOpenAI(
+        temperature=0.1,
+        openai_api_key=st.session_state["key"],
+    )
     choose_chain = choose_prompt | llm
     condensed = "\n\n".join(
         f"{answer['answer']} \n Source:{answer['source']} \n Date:{answer['date']} \n "
@@ -163,8 +171,6 @@ if key:
     st.session_state["key"] = key
     llm = ChatOpenAI(
         temperature=0.1,
-        model="gpt-3.5-turbo-0125",
-        streaming=True,
         openai_api_key=st.session_state["key"],
     )
     retriever = load_website("https://developers.cloudflare.com/assets/sitemap.xml")
