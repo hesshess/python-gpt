@@ -222,6 +222,7 @@ with st.sidebar:
     if choice == "File":
         file = st.file_uploader("Upload a .dox, .txt for .pdf file", type=["pdf", "txt", "docx"])
         if file:
+            file_name = file.name
             docs = split_file(file)
     else:
         topic = st.text_input("Search Wikipedia...")
@@ -240,7 +241,7 @@ if not docs:
         """
     )         
 else:
-    response = run_quiz_chain(docs, topic if topic else file.name)
+    response = run_quiz_chain(docs, topic if topic else file_name)
     with st.form("questions_form"):
         for question in response['questions']:
             st.write(question['question'])
