@@ -210,7 +210,7 @@ functions = [
 ]
 
 
-@st.cache_data(show_spinner="Creating Assistant...")
+@st.cache_resource(show_spinner="Creating Assistant...")
 def create_assistant(name):
     assistant = client.beta.assistants.create(
         name=name,
@@ -222,7 +222,7 @@ def create_assistant(name):
     return st.session_state.assistant_id
 
 
-@st.cache_data(show_spinner="Creating Thread...")
+@st.cache_resource(show_spinner="Creating Thread...")
 def create_thread(query):
     thread = client.beta.threads.create(
         messages=[
@@ -236,7 +236,7 @@ def create_thread(query):
     return st.session_state.thread_id
 
 
-@st.cache_data(show_spinner="Creating Run...")
+@st.cache_resource(show_spinner="Creating Run...")
 def create_run(thread_id, assistant_id):
     print(f"{st.session_state['thread_id']}🥳🥶{st.session_state['assistant_id']}")
     run = client.beta.threads.runs.create(
@@ -252,7 +252,7 @@ key = st.sidebar.text_input("⬇️ OPENAI API KEY 🔑")
 if key:
     st.session_state["key"] = key
     client = openai.Client(api_key=st.session_state["key"])
-    assistant_id = create_assistant("Research-1")
+    assistant_id = create_assistant("Research-2")
     if assistant_id:
         send_conversation("I'm ready! Let's research!", "ai", save=False)
         paint_history()
