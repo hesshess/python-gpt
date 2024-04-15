@@ -7,7 +7,7 @@ from langchain.tools import DuckDuckGoSearchResults
 from langchain.retrievers import WikipediaRetriever
 
 # from langchain.document_loaders import AsyncChromiumLoader
-from langchain.document_loaders import UnstructuredURLLoader
+from langchain.document_loaders import SeleniumURLLoader
 from langchain.document_transformers import Html2TextTransformer
 import os
 
@@ -118,7 +118,7 @@ def get_linkScrape(inputs):
     lst = []
     lst.append(link)
     # loader = AsyncChromiumLoader(lst)
-    loader = UnstructuredURLLoader(urls=lst)
+    loader = SeleniumURLLoader(urls=lst)
     docs = loader.load()
     html2text = Html2TextTransformer()
     docs_transformed = html2text.transform_documents(docs)
