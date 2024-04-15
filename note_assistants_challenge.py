@@ -37,11 +37,7 @@ st.markdown(
 
 st.sidebar.link_button(
     "🏠 Github repository 🏠",
-    "https://github.com/hesshess/python-gpt/",
-)
-st.sidebar.link_button(
-    "📓 Agents to Assistants Commit📝",
-    "https://github.com/hesshess/python-gpt/blob/a7629ad2b218a6c8871d63491758800d75cd62ac/note_assistants_challenge.py",
+    "https://github.com/hesshess/python-gpt/blob/main/note_assistants_challenge.py",
 )
 
 
