@@ -41,7 +41,7 @@ st.sidebar.link_button(
 )
 st.sidebar.link_button(
     "📓 Agents to Assistants Commit📝",
-    "https://github.com/hesshess/python-gpt/blob/b423ec75394a0e1a5d93e2c48cf7a23f06f6cb2b/note_assistants_challenge.py",
+    "https://github.com/hesshess/python-gpt/blob/a7629ad2b218a6c8871d63491758800d75cd62ac/note_assistants_challenge.py",
 )
 
 
