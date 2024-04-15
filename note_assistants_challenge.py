@@ -128,6 +128,7 @@ def saveTXTfileTool(inputs):
         f.write(doc)
     with open(file_path, "rb") as f2:
         btn = st.download_button(
+            key=time.strftime("%H%M%S"),
             label="Download txt",
             data=f2,
             file_name="research.txt",
@@ -256,11 +257,12 @@ key = st.sidebar.text_input("⬇️ OPENAI API KEY 🔑")
 if key:
     st.session_state["key"] = key
     client = openai.Client(api_key=st.session_state["key"])
-    assistant_id = create_assistant("Research-4")
+    assistant_id = create_assistant("Research-5")
     if assistant_id:
         send_conversation("I'm ready! Let's research!", "ai", save=False)
         paint_history()
         query = st.chat_input("What do you want to research about...？")
+        send_conversation(query, "human")
         if query is not None:
             with st.status("Starting work...", expanded=False) as status_box:
                 thread_id = create_thread(query)
