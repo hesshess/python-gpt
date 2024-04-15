@@ -6,8 +6,9 @@ from langchain.utilities import DuckDuckGoSearchAPIWrapper
 from langchain.tools import DuckDuckGoSearchResults
 from langchain.retrievers import WikipediaRetriever
 
-# from langchain.document_loaders import AsyncChromiumLoader
-from langchain.document_loaders import SeleniumURLLoader
+from langchain.document_loaders import AsyncChromiumLoader
+
+# from langchain.document_loaders import SeleniumURLLoader
 from langchain.document_transformers import Html2TextTransformer
 import os
 
@@ -117,8 +118,8 @@ def get_linkScrape(inputs):
     link = inputs["link"]
     lst = []
     lst.append(link)
-    # loader = AsyncChromiumLoader(lst)
-    loader = SeleniumURLLoader(urls=lst)
+    loader = AsyncChromiumLoader(lst)
+    # loader = SeleniumURLLoader(urls=lst)
     docs = loader.load()
     html2text = Html2TextTransformer()
     docs_transformed = html2text.transform_documents(docs)
@@ -261,7 +262,7 @@ key = st.sidebar.text_input("⬇️ OPENAI API KEY 🔑")
 if key:
     st.session_state["key"] = key
     client = openai.Client(api_key=st.session_state["key"])
-    assistant_id = create_assistant("Research-8")
+    assistant_id = create_assistant("Research-9")
     if assistant_id:
         send_conversation("I'm ready! Let's research!", "ai", save=False)
         paint_history()

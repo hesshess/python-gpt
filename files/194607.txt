@@ -1,0 +1,18 @@
+Dan Goodin, Ars Technica Security
+The XZ Backdoor: Everything You Need to Know
+Details are starting to emerge about a stunning supply chain attack that sent the open source software community reeling.
+
+What Is XZ Utils? XZ Utils is nearly ubiquitous in Linux. It provides lossless data compression on virtually all Unix-like operating systems, including Linux. XZ Utils provides critical functions for compressing and decompressing data during all kinds of operations. XZ Utils also supports the legacy .lzma format.
+
+What Happened? Andres Freund, a developer and engineer working on Microsoft’s PostgreSQL offerings, was recently troubleshooting performance problems a Debian system was experiencing with SSH. Specifically, SSH logins were consuming too many CPU cycles and were generating errors with valgrind. Freund eventually discovered the problems were the result of updates that had been made to XZ Utils. On Friday, Freund took to the Open Source Security List to disclose the updates were the result of someone intentionally planting a backdoor in the compression software.
+
+What Does the Backdoor Do? Malicious code added to xz Utils versions 5.6.0 and 5.6.1 modified the way the software functions. The backdoor manipulated sshd, the executable file used to make remote SSH connections. Anyone in possession of a predetermined encryption key could stash any code of their choice in an SSH login certificate, upload it, and execute it on the backdoored device.
+
+How Did This Backdoor Come to Be? It would appear that this backdoor was years in the making. In 2021, someone with the username JiaT75 made their first known commit to an open source project. JiaT75 submitted a patch over the XZ Utils mailing list. In January 2023, JiaT75 made their first commit to XZ Utils. In the months following, JiaT75 became increasingly involved in XZ Utils affairs. In February of this year, Tan issued commits for versions 5.6.0 and 5.6.1 of XZ Utils. The updates implemented the backdoor.
+
+CVE Tracking? Yes, it's CVE-2024-3094.
+
+How Do I Know If the Backdoor Is Present on My Device? There are several ways, one is the tool from security firm Binarly. The tool detects implementation of IFUNC and is based on behavioral analysis. It can automatically detect invariants in the event a similar backdoor is implanted elsewhere. There's also a project called xzbot.
+
+This story originally appeared on Ars Technica.
+Updated 4/2/2024, 1:23 pm ET to include additional details.
