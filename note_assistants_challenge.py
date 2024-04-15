@@ -9,6 +9,8 @@ from langchain.document_loaders import AsyncChromiumLoader
 from langchain.document_transformers import Html2TextTransformer
 import os
 
+os.system("playwright install")
+os.system("sudo playwright install-deps")
 
 import nest_asyncio
 
@@ -116,8 +118,7 @@ def get_linkScrape(inputs):
     link = inputs["link"]
     lst = []
     lst.append(link)
-    os.system("playwright install")
-    os.system("sudo playwright install-deps")
+
     loader = AsyncChromiumLoader(lst)
     docs = loader.load()
     html2text = Html2TextTransformer()
