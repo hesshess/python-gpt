@@ -262,8 +262,8 @@ if key:
         send_conversation("I'm ready! Let's research!", "ai", save=False)
         paint_history()
         query = st.chat_input("What do you want to research about...？")
-        send_conversation(query, "human")
         if query is not None:
+            send_conversation(query, "human")
             with st.status("Starting work...", expanded=False) as status_box:
                 thread_id = create_thread(query)
                 run_id = create_run(thread_id, assistant_id)
