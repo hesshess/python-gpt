@@ -91,12 +91,9 @@ def submit_tool_outputs(run_id, thread_id):
 
 
 def get_duckDuckGoSearch(inputs):
+    ddg = DuckDuckGoSearchAPIWrapper()
     query = inputs["query"]
-    wrapper = DuckDuckGoSearchAPIWrapper(max_results=1)
-    search = DuckDuckGoSearchResults(api_wrapper=wrapper)
-    result = search.run(query)
-    print(result)
-    return result
+    return ddg.run(f"The link of {query}")
 
 
 def get_wikipediaSearch(inputs):
