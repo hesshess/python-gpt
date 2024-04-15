@@ -42,6 +42,10 @@ st.markdown(
 
 st.sidebar.link_button(
     "🏠 Github repository 🏠",
+    "https://github.com/hesshess/python-gpt/",
+)
+st.sidebar.link_button(
+    "📓 Agents to Assistants in JupyterNB 📝",
     "https://github.com/hesshess/python-gpt/blob/b423ec75394a0e1a5d93e2c48cf7a23f06f6cb2b/jupiter_study/note_assistants_api2.ipynb",
 )
 
