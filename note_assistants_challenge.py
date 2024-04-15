@@ -1,7 +1,9 @@
-import streamlit as st
-import json
-import openai
 import time
+
+import openai
+import streamlit as st
+
+import json
 from langchain.utilities import DuckDuckGoSearchAPIWrapper
 from langchain.tools import DuckDuckGoSearchResults
 from langchain.retrievers import WikipediaRetriever
@@ -32,11 +34,6 @@ st.set_page_config(
 st.markdown(
     """
     # OpenAI Assistants (Graduation Project)
-- Refactor the agent you made in the previous assignment into an OpenAI Assistant.
-- Give it a user interface with Streamlit that displays the conversation history.
-- Allow the user to use its own OpenAI API Key, load it from an st.input inside of st.sidebar
-- Using st.sidebar put a link to the Github repo with the code of your Streamlit app.
-
 """
 )
 
@@ -48,6 +45,55 @@ st.sidebar.link_button(
     "📓 Agents to Assistants in JupyterNB 📝",
     "https://github.com/hesshess/python-gpt/blob/b423ec75394a0e1a5d93e2c48cf7a23f06f6cb2b/jupiter_study/note_assistants_api2.ipynb",
 )
+
+
+def get_run(run_id, thread_id):
+    return client.beta.threads.runs.retrieve(
+        run_id=run_id,
+        thread_id=thread_id,
+    )
+
+
+def send_message(thread_id, content):
+    return client.beta.threads.messages.create(
+        thread_id=thread_id, role="user", content=content
+    )
+
+
+def get_messages(thread_id):
+    messages = client.beta.threads.messages.list(thread_id=thread_id)
+    messages = list(messages)
+    messages.reverse()
+    for message in messages:
+        print(f"{message.role}: {message.content[0].text.value}")
+
+
+def get_tool_outputs(run_id, thread_id):
+    run = get_run(run_id, thread_id)
+    outputs = []
+    for action in run.required_action.submit_tool_outputs.tool_calls:
+        action_id = action.id
+        function = action.function
+        print(f"❤️Calling function: {function.name} with arg {function.arguments}✅")
+        args = function.arguments
+        outputs.append(
+            {
+                "output": functions_map[function.name](json.loads(args)),
+                "tool_call_id": action_id,
+            }
+        )
+        print(outputs)
+
+    return outputs
+
+
+def submit_tool_outputs(run_id, thread_id):
+    outpus = get_tool_outputs(run_id, thread_id)
+    return client.beta.threads.runs.submit_tool_outputs(
+        run_id=run_id,
+        thread_id=thread_id,
+        tool_outputs=outpus,
+    )
 
 
 def get_duckDuckGoSearch(inputs):
@@ -82,7 +128,13 @@ def saveTXTfileTool(inputs):
     file_path = f"./files/{time.strftime('%H%M%S')}.txt"
     with open(file_path, "w") as f:
         f.write(doc)
-        st.download_button("Download txt", f)
+    with open(file_path, "rb") as f2:
+        btn = st.download_button(
+            label="Download txt",
+            data=f2,
+            file_name="research.txt",
+        )
+    return doc
 
 
 functions_map = {
@@ -166,15 +218,15 @@ functions = [
 
 
 @st.cache_data(show_spinner="Creating Assistant...")
-def create_assistant(_functions):
+def create_assistant(name):
     assistant = client.beta.assistants.create(
-        name="Research Assistant",
+        name=name,
         instructions="You help users do research in Wikipedia and DuckDuckGo. when you find the website link from DuckDuckGo and extract the content of the link and you save the content to a .txt file for my research. Don't forget to save the .txt file",
         model="gpt-4-1106-preview",
-        tools=_functions,
+        tools=functions,
     )
     st.session_state["assistant_id"] = assistant.id
-    st.sidebar.write(st.session_state.assistant_id)
+    return st.session_state.assistant_id
 
 
 @st.cache_data(show_spinner="Creating Thread...")
@@ -188,66 +240,18 @@ def create_thread(query):
         ]
     )
     st.session_state["thread_id"] = thread.id
-    st.sidebar.write(st.session_state.thread_id)
+    return st.session_state.thread_id
 
 
 @st.cache_data(show_spinner="Creating Run...")
-def create_run(_thread_id):
+def create_run(thread_id, assistant_id):
+    print(f"{st.session_state['thread_id']}🥳🥶{st.session_state['assistant_id']}")
     run = client.beta.threads.runs.create(
-        thread_id=st.session_state["thread_id"],
-        assistant_id=st.session_state["assistant_id"],
+        thread_id=thread_id,
+        assistant_id=assistant_id,
     )
     st.session_state["run_id"] = run.id
-    st.sidebar.write(st.session_state.run_id)
-
-
-def get_run(run_id, thread_id):
-    return client.beta.threads.runs.retrieve(
-        run_id=run_id,
-        thread_id=thread_id,
-    )
-
-
-def send_message(thread_id, content):
-    return client.beta.threads.messages.create(
-        thread_id=thread_id, role="user", content=content
-    )
-
-
-def get_messages(thread_id):
-    messages = client.beta.threads.messages.list(thread_id=thread_id)
-    messages = list(messages)
-    messages.reverse()
-    for message in messages:
-        print(f"{message.role}: {message.content[0].text.value}")
-
-
-def get_tool_outputs(run_id, thread_id):
-    run = get_run(run_id, thread_id)
-    outputs = []
-    for action in run.required_action.submit_tool_outputs.tool_calls:
-        action_id = action.id
-        function = action.function
-        print(f"Calling function: {function.name} with arg {function.arguments}")
-        args = function.arguments
-        outputs.append(
-            {
-                "output": functions_map[function.name](json.loads(args)),
-                "tool_call_id": action_id,
-            }
-        )
-        print(outputs)
-
-    return outputs
-
-
-def submit_tool_outputs(run_id, thread_id):
-    outpus = get_tool_outputs(run_id, thread_id)
-    return client.beta.threads.runs.submit_tool_outputs(
-        run_id=run_id,
-        thread_id=thread_id,
-        tool_outputs=outpus,
-    )
+    return st.session_state.run_id
 
 
 key = st.sidebar.text_input("⬇️ OPENAI API KEY 🔑")
@@ -255,44 +259,27 @@ key = st.sidebar.text_input("⬇️ OPENAI API KEY 🔑")
 if key:
     st.session_state["key"] = key
     client = openai.Client(api_key=st.session_state["key"])
-    create_assistant(functions)
+    assistant_id = create_assistant("Research Assistant")
     send_conversation("I'm ready! Let's research!", "ai", save=False)
     paint_history()
-    message = st.chat_input("What do you want to research about...？")
-    if message:
-        send_conversation(message, "human")
-        with st.status("Starting Research...", expanded=False) as status_box:
-            thread = client.beta.threads.create(
-                messages=[
-                    {
-                        "role": "user",
-                        "content": message,
-                    }
-                ]
-            )
-            st.session_state["thread_id"] = thread.id
-            run = client.beta.threads.runs.create(
-                thread_id=st.session_state["thread_id"],
-                assistant_id=st.session_state["assistant_id"],
-            )
-            st.session_state["run_id"] = run.id
-            while (
-                get_run(
-                    st.session_state["run_id"], st.session_state["thread_id"]
-                ).status
-                != "completed"
-            ):
+    query = st.chat_input("What do you want to research about...？")
+    if query is not None:
+        with st.status("Starting work...", expanded=False) as status_box:
+            thread_id = create_thread(query)
+            run_id = create_run(thread_id, assistant_id)
+            run = get_run(run_id, thread_id)
+            while run.status != "completed":
                 time.sleep(5)
-                st.sidebar.markdown(
-                    get_tool_outputs(
-                        st.session_state["run_id"], st.session_state["thread_id"]
-                    )
+                status_box.update(label=f"{run.status}...", state="running")
+                if run.status == "requires_action":
+                    submit_tool_outputs(run_id, thread_id)
+                run = get_run(
+                    run_id,
+                    thread_id,
                 )
-                submit_tool_outputs(
-                    st.session_state["run_id"], st.session_state["thread_id"]
-                )
-                run = get_run(st.session_state["run_id"], st.session_state["thread_id"])
             status_box.update(label="Complete", state="complete", expanded=True)
+            messages = client.beta.threads.messages.list(thread_id=thread_id)
+            send_conversation(messages.data[0].content[0].text.value, "ai")
 else:
     st.session_state["messages"] = []
     st.session_state["key"] = []
