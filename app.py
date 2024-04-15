@@ -31,7 +31,7 @@ def save_message(message, role):
     st.session_state["messages"].append({"role": role, "message": message})
 
 
-@st.cache_resource(show_spinner="Embedding file...")
+@st.cache_data(show_spinner="Embedding file...")
 def embed_file(file):
     file_content = file.read()
     file_path = f"./cache/files/{file.name}"

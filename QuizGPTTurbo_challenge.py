@@ -67,7 +67,7 @@ if key:
     )
     prompt = PromptTemplate.from_template("Make a {level} quiz about {term}")
 
-    @st.cache_resource(show_spinner="Making quiz...")
+    @st.cache_data(show_spinner="Making quiz...")
     def run_quiz_chain(topic, level):
         chain = prompt | llm
         return chain.invoke({"term": topic, "level": level})
