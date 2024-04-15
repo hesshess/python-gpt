@@ -228,8 +228,7 @@ def create_assistant(name):
         model="gpt-4-1106-preview",
         tools=functions,
     )
-    st.session_state["assistant_id"] = assistant.id
-    return st.session_state.assistant_id
+    return assistant.id
 
 
 @st.cache_resource(show_spinner="Creating Thread...")
@@ -242,8 +241,7 @@ def create_thread(query):
             }
         ]
     )
-    st.session_state["thread_id"] = thread.id
-    return st.session_state.thread_id
+    return thread.id
 
 
 @st.cache_resource(show_spinner="Creating Run...")
@@ -253,8 +251,7 @@ def create_run(thread_id, assistant_id):
         thread_id=thread_id,
         assistant_id=assistant_id,
     )
-    st.session_state["run_id"] = run.id
-    return st.session_state.run_id
+    return run.id
 
 
 key = st.sidebar.text_input("⬇️ OPENAI API KEY 🔑")
@@ -287,6 +284,3 @@ if key:
 else:
     st.session_state["messages"] = []
     st.session_state["key"] = []
-    st.session_state["assistant_id"] = []
-    st.session_state["thread_id"] = []
-    st.session_state["run_id"] = []
