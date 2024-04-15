@@ -42,8 +42,8 @@ st.sidebar.link_button(
     "https://github.com/hesshess/python-gpt/",
 )
 st.sidebar.link_button(
-    "📓 Agents to Assistants in JupyterNB 📝",
-    "https://github.com/hesshess/python-gpt/blob/b423ec75394a0e1a5d93e2c48cf7a23f06f6cb2b/jupiter_study/note_assistants_api2.ipynb",
+    "📓 Agents to Assistants Commit📝",
+    "https://github.com/hesshess/python-gpt/blob/b423ec75394a0e1a5d93e2c48cf7a23f06f6cb2b/note_assistants_challenge.py",
 )
 
 
