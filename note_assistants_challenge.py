@@ -1,5 +1,7 @@
 import time
-from openai import OpenAI
+
+# from openai import OpenAI
+import openai
 import streamlit as st
 import json
 from langchain.utilities import DuckDuckGoSearchAPIWrapper
@@ -256,7 +258,7 @@ key = st.sidebar.text_input("⬇️ OPENAI API KEY 🔑")
 
 if key:
     st.session_state["key"] = key
-    client = OpenAI(api_key=st.session_state["key"])
+    client = openai.Client(api_key=st.session_state["key"])
     assistant_id = create_assistant("Research Assistant")
     send_conversation("I'm ready! Let's research!", "ai", save=False)
     paint_history()

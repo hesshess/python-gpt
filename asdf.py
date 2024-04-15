@@ -1,5 +1,4 @@
 import time
-from openai import OpenAI
 import streamlit as st
 import json
 from langchain.utilities import DuckDuckGoSearchAPIWrapper
@@ -7,6 +6,8 @@ from langchain.tools import DuckDuckGoSearchResults
 from langchain.retrievers import WikipediaRetriever
 from langchain.document_loaders import AsyncChromiumLoader
 from langchain.document_transformers import Html2TextTransformer
+
+from openai import OpenAI
 
 
 def send_conversation(message, role, save=True):
