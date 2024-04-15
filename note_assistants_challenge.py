@@ -256,27 +256,28 @@ key = st.sidebar.text_input("⬇️ OPENAI API KEY 🔑")
 if key:
     st.session_state["key"] = key
     client = openai.Client(api_key=st.session_state["key"])
-    assistant_id = create_assistant("Research Assistant")
-    send_conversation("I'm ready! Let's research!", "ai", save=False)
-    paint_history()
-    query = st.chat_input("What do you want to research about...？")
-    if query is not None:
-        with st.status("Starting work...", expanded=False) as status_box:
-            thread_id = create_thread(query)
-            run_id = create_run(thread_id, assistant_id)
-            run = get_run(run_id, thread_id)
-            while run.status != "completed":
-                time.sleep(5)
-                status_box.update(label=f"{run.status}...", state="running")
-                if run.status == "requires_action":
-                    submit_tool_outputs(run_id, thread_id)
-                run = get_run(
-                    run_id,
-                    thread_id,
-                )
-            status_box.update(label="Complete", state="complete", expanded=True)
-            messages = client.beta.threads.messages.list(thread_id=thread_id)
-            send_conversation(messages.data[0].content[0].text.value, "ai")
+    assistant_id = create_assistant("Research")
+    if assistant_id:
+        send_conversation("I'm ready! Let's research!", "ai", save=False)
+        paint_history()
+        query = st.chat_input("What do you want to research about...？")
+        if query is not None:
+            with st.status("Starting work...", expanded=False) as status_box:
+                thread_id = create_thread(query)
+                run_id = create_run(thread_id, assistant_id)
+                run = get_run(run_id, thread_id)
+                while run.status != "completed":
+                    time.sleep(5)
+                    status_box.update(label=f"{run.status}...", state="running")
+                    if run.status == "requires_action":
+                        submit_tool_outputs(run_id, thread_id)
+                    run = get_run(
+                        run_id,
+                        thread_id,
+                    )
+                status_box.update(label="Complete", state="complete", expanded=True)
+                messages = client.beta.threads.messages.list(thread_id=thread_id)
+                send_conversation(messages.data[0].content[0].text.value, "ai")
 else:
     st.session_state["messages"] = []
     st.session_state["key"] = []
