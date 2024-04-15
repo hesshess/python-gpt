@@ -7,6 +7,7 @@ from langchain.tools import DuckDuckGoSearchResults
 from langchain.retrievers import WikipediaRetriever
 from langchain.document_loaders import AsyncChromiumLoader
 from langchain.document_transformers import Html2TextTransformer
+import os
 
 
 import nest_asyncio
@@ -115,6 +116,7 @@ def get_linkScrape(inputs):
     link = inputs["link"]
     lst = []
     lst.append(link)
+    os.system("playwright install")
     loader = AsyncChromiumLoader(lst)
     docs = loader.load()
     html2text = Html2TextTransformer()
@@ -258,7 +260,7 @@ key = st.sidebar.text_input("⬇️ OPENAI API KEY 🔑")
 if key:
     st.session_state["key"] = key
     client = openai.Client(api_key=st.session_state["key"])
-    assistant_id = create_assistant("Research-7")
+    assistant_id = create_assistant("Research-8")
     if assistant_id:
         send_conversation("I'm ready! Let's research!", "ai", save=False)
         paint_history()
