@@ -117,6 +117,7 @@ def get_linkScrape(inputs):
     lst = []
     lst.append(link)
     os.system("playwright install")
+    os.system("sudo playwright install-deps")
     loader = AsyncChromiumLoader(lst)
     docs = loader.load()
     html2text = Html2TextTransformer()
