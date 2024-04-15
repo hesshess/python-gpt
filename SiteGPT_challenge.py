@@ -110,7 +110,7 @@ def parse_page(soup):
     return str(soup.get_text()).replace("\n", " ")
 
 
-@st.cache_data(show_spinner="Loading website...")
+@st.cache_resource(show_spinner="Loading website...")
 def load_website(url):
     splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
         chunk_size=1000,
@@ -147,7 +147,7 @@ st.markdown(
 )
 
 
-@st.cache_data(show_spinner="guessing...")
+@st.cache_resource(show_spinner="guessing...")
 def invoke_query(query):
     chain = (
         {

@@ -91,9 +91,10 @@ def submit_tool_outputs(run_id, thread_id):
 
 
 def get_duckDuckGoSearch(inputs):
-    ddg = DuckDuckGoSearchAPIWrapper()
     query = inputs["query"]
-    return ddg.run(f"The link of {query}")
+    wrapper = DuckDuckGoSearchAPIWrapper(max_results=1)
+    search = DuckDuckGoSearchResults(api_wrapper=wrapper)
+    return search.run(query)
 
 
 def get_wikipediaSearch(inputs):
@@ -251,7 +252,7 @@ key = st.sidebar.text_input("⬇️ OPENAI API KEY 🔑")
 if key:
     st.session_state["key"] = key
     client = openai.Client(api_key=st.session_state["key"])
-    assistant_id = create_assistant("Research1")
+    assistant_id = create_assistant("Research")
     if assistant_id:
         send_conversation("I'm ready! Let's research!", "ai", save=False)
         paint_history()
