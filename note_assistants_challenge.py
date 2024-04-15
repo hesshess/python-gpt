@@ -257,7 +257,7 @@ key = st.sidebar.text_input("⬇️ OPENAI API KEY 🔑")
 if key:
     st.session_state["key"] = key
     client = openai.Client(api_key=st.session_state["key"])
-    assistant_id = create_assistant("Research-5")
+    assistant_id = create_assistant("Research-6")
     if assistant_id:
         send_conversation("I'm ready! Let's research!", "ai", save=False)
         paint_history()
@@ -269,7 +269,6 @@ if key:
                 run_id = create_run(thread_id, assistant_id)
                 run = get_run(run_id, thread_id)
                 while run.status != "completed":
-                    time.sleep(5)
                     status_box.update(label=f"{run.status}...", state="running")
                     if run.status == "requires_action":
                         submit_tool_outputs(run_id, thread_id)
