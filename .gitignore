@@ -3,4 +3,3 @@ env/
 .history/
 .cache/
 .streamlit/
-node_modules/

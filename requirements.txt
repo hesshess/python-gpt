@@ -26,6 +26,7 @@ chardet==5.2.0
 charset-normalizer==3.2.0
 chroma-hnswlib==0.7.3
 chromadb==0.4.11
+chromium==0.0.0
 click==8.1.7
 coloredlogs==15.0.1
 comm==0.1.4
