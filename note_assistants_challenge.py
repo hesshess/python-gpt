@@ -8,6 +8,10 @@ from langchain.retrievers import WikipediaRetriever
 from langchain.document_loaders import AsyncChromiumLoader
 from langchain.document_transformers import Html2TextTransformer
 
+import nest_asyncio
+
+nest_asyncio.apply()
+
 
 def send_conversation(message, role, save=True):
     with st.chat_message(role):
