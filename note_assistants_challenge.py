@@ -94,7 +94,9 @@ def get_duckDuckGoSearch(inputs):
     query = inputs["query"]
     wrapper = DuckDuckGoSearchAPIWrapper(max_results=1)
     search = DuckDuckGoSearchResults(api_wrapper=wrapper)
-    return search.run(query)
+    result = search.run(query)
+    print(result)
+    return result
 
 
 def get_wikipediaSearch(inputs):
