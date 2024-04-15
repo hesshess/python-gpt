@@ -1,6 +1,4 @@
 import time
-
-# from openai import OpenAI
 import openai
 import streamlit as st
 import json
@@ -143,7 +141,6 @@ functions_map = {
     "get_linkScrape": get_linkScrape,
     "saveTXTfileTool": saveTXTfileTool,
 }
-
 
 functions = [
     {

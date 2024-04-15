@@ -1,4 +1,5 @@
 import time
+import openai
 import streamlit as st
 import json
 from langchain.utilities import DuckDuckGoSearchAPIWrapper
@@ -6,8 +7,6 @@ from langchain.tools import DuckDuckGoSearchResults
 from langchain.retrievers import WikipediaRetriever
 from langchain.document_loaders import AsyncChromiumLoader
 from langchain.document_transformers import Html2TextTransformer
-
-from openai import OpenAI
 
 
 def send_conversation(message, role, save=True):
@@ -143,7 +142,6 @@ functions_map = {
     "saveTXTfileTool": saveTXTfileTool,
 }
 
-
 functions = [
     {
         "type": "function",
@@ -257,7 +255,7 @@ key = st.sidebar.text_input("⬇️ OPENAI API KEY 🔑")
 
 if key:
     st.session_state["key"] = key
-    client = OpenAI(api_key=st.session_state["key"])
+    client = openai.Client(api_key=st.session_state["key"])
     assistant_id = create_assistant("Research Assistant")
     send_conversation("I'm ready! Let's research!", "ai", save=False)
     paint_history()
